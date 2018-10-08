@@ -10,11 +10,11 @@ $factory->define(
         $company = $faker->company;
         return [
             'name' => mb_substr($company, 0, 128),
-            'description' => $faker->realText(1000),
+            'description'   => $faker->realText(1000),
             'marketing_url' => $faker->url,
-            'url' => $faker->url,
-            'image' => $faker->imageUrl(),
-            'status' => $faker->randomElement(Podcast::getAllStatuses()),
+            'feed_url' => $faker->url,
+            'image'    => $faker->imageUrl(),
+            'status'   => $faker->randomElement(Podcast::getAllStatuses()),
         ];
     }
 );
