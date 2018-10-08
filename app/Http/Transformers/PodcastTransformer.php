@@ -11,6 +11,7 @@ class PodcastTransformer extends TransformerAbstract
     {
         // TODO add csrf protection, filter text before output
         return [
+            'id' => $podcast->id,
             'name' => $podcast->name,
             'description' => $podcast->description,
             'marketing_url' => $podcast->marketing_url,
