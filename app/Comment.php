@@ -27,6 +27,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Comment wherePodcastId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Comment whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \App\Podcast $podcast
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Comment onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\Comment withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Comment withoutTrashed()
  */
 class Comment extends Model
 {

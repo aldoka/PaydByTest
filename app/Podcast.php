@@ -28,6 +28,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Podcast whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Podcast whereUrl($value)
  * @mixin \Eloquent
+ * @property string|null $marketing_url
+ * @property string $feed_url
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Podcast onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Podcast whereFeedUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Podcast whereMarketingUrl($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Podcast withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Podcast withoutTrashed()
  */
 class Podcast extends Model
 {
