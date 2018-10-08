@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Comment
@@ -29,6 +30,16 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Comment extends Model
 {
+
+    use SoftDeletes;
+
+    /** @var bool  */
+    public $timestamps = true;
+
+    /** @var array */
+    protected $fillable = ['podcast_id', 'author_name', 'author_email', 'comment', 'comment_substr', 'created_at', 'updated_at', 'deleted_at'];
+    /** @var array  */
+    protected $hidden = ['deleted_at'];
 
 
     /**
