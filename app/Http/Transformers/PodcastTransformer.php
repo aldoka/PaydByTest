@@ -18,7 +18,8 @@ class PodcastTransformer extends TransformerAbstract
             'image' => $podcast->image,
             'status' => $podcast->status,
             'created_at' => optional($podcast->created_at)->format('Y-m-d H:i:s'),
-            'deleted_at' => optional($podcast->deleted_at)->format('Y-m-d H:i:s'),
+            'updated_at' => optional($podcast->updated_at)->format('Y-m-d H:i:s'),
+            'comments' => $podcast->comments,
             ];
     }
 

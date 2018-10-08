@@ -17,8 +17,14 @@ use Illuminate\Http\Request;
 //    return $request->user();
 //});
 
+/** @var \Dingo\Api\Routing\Router $api */
 $api = app('Dingo\Api\Routing\Router');
-$api->version('v1', ['middleware' => 'api.throttle'], function ($api) {
-    $api->get('podcasts/{status}', 'App\Http\Controllers\PodcastController@index')->where('status', '[A-Za-z]+');
-    $api->get('podcasts/{id}', 'App\Http\Controllers\PodcastController@show')->where('id', '[0-9]+');
+$api->version('v1', ['middleware' => 'api.throttle'], function (\Dingo\Api\Routing\Router $api) {
+    $api->get('podcasts/{status}', ['as' => 'podcasts.index', 'uses' => 'App\Http\Controllers\PodcastController@index'])
+        ->where('status', '[A-Za-z]+');
+    $api->get('podcasts/{id}', ['as' => 'podcasts.show', 'uses' => 'App\Http\Controllers\PodcastController@show'])
+        ->where('id', '[0-9]+');
+    $api->post('podcasts', ['as' => 'podcasts.store', 'uses' => 'App\Http\Controllers\PodcastController@store']);
+    $api->put('podcasts/{id}', ['as' => 'podcasts.update', 'uses' => 'App\Http\Controllers\PodcastController@update']);
+    $api->delete('podcasts/{id}', ['as' => 'podcasts.destroy', 'uses' => 'App\Http\Controllers\PodcastController@destroy']);
 });

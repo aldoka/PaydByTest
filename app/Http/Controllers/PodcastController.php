@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePodcast;
+use App\Http\Requests\UpdatePodcast;
 use App\Http\Transformers\PodcastTransformer;
 use App\Podcast;
 use App\Scopes\PodcastScope;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 /**
  * Class PodcastController
@@ -38,7 +41,7 @@ class PodcastController extends BaseController
     public function index(string $status)
     {
         if (in_array($status, self::QUERY_STATUSES) === false) {
-            throw new Dingo\Api\Exception\ResourceException('Unknown status filter');
+            return $this->response->errorBadRequest('Unknown status filter');
         }
 
         try {
@@ -53,7 +56,9 @@ class PodcastController extends BaseController
                     break;
             }
         } catch (\Exception $e) {
-            throw new \Dingo\Api\Exception\ResourceException('Application was unable process this podcasts list');
+            return $this->response->errorInternal('Application was unable to process this podcasts list');
+        } catch (\Throwable $t) {
+            return $this->response->errorInternal('Application was unable to save this podcast');
         }
 
         return $this->response->paginator($podcasts, new PodcastTransformer);
@@ -62,12 +67,24 @@ class PodcastController extends BaseController
     /**
      * Store a newly created podcast in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  StorePodcast $request
+     * @param Podcast podcast
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePodcast $request, Podcast $podcast)
     {
-        //
+        try {
+            $validated = $request->validated();
+            $validated['status'] = Podcast::STATUS_REVIEW;
+            $podcast->fill($validated);
+            $podcast->save();
+        } catch (\Exception $e) {
+            return $this->response->errorInternal('Application was unable to save this podcast');
+        } catch (\Throwable $t) {
+            return $this->response->errorInternal('Application was unable to save this podcast');
+        }
+
+        return $this->response->created();
     }
 
     /**
@@ -94,24 +111,49 @@ class PodcastController extends BaseController
     /**
      * Update the specified podcast in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  UpdatePodcast $request
      * @param  \App\Podcast  $podcast
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Podcast $podcast)
+    public function update(UpdatePodcast $request, Podcast $podcast, int $id)
     {
-        //
+        try {
+            $result = $podcast->findOrFail($id)
+                ->fill($request->validated())
+                ->save();
+        } catch (ModelNotFoundException $e) {
+            throw new \Dingo\Api\Exception\ResourceException('Application can\'t find podcast with such id');
+        } catch (\Exception $e) {
+            return $this->response->errorInternal('Application was unable to save this podcast');
+        } catch (\Throwable $t) {
+            return $this->response->errorInternal('Application was unable to save this podcast');
+        }
+
+        return $this->response->noContent();
     }
 
     /**
      * Remove the specified podcast from storage.
      *
      * @param  \App\Podcast  $podcast
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Podcast $podcast)
+    public function destroy(Podcast $podcast, int $id)
     {
-        //
+        try {
+            $result = $podcast->findOrFail($id)
+                ->delete();
+        } catch (ModelNotFoundException $e) {
+            throw new \Dingo\Api\Exception\ResourceException('Application can\'t find podcast with such id');
+        } catch (\Exception $e) {
+            return $this->response->errorInternal('Application was unable to save this podcast');
+        } catch (\Throwable $t) {
+            return $this->response->errorInternal('Application was unable to save this podcast');
+        }
+
+        return $this->response->noContent();
     }
 
 
