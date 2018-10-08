@@ -26,7 +26,7 @@ class AddMarketingUrlToPodcasts extends Migration
     public function down()
     {
         Schema::table('podcasts', function (Blueprint $table) {
-            $table->dropColumn('markeing_url');
+            $table->dropColumn('marketing_url');
         });
     }
 }
