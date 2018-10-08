@@ -55,8 +55,6 @@ class PodcastController extends BaseController
                         ->paginate(self::ITEMS_PER_PAGE);
                     break;
             }
-        } catch (\Exception $e) {
-            return $this->response->errorInternal('Application was unable to process this podcasts list');
         } catch (\Throwable $t) {
             return $this->response->errorInternal('Application was unable to save this podcast');
         }
@@ -78,8 +76,6 @@ class PodcastController extends BaseController
             $validated['status'] = Podcast::STATUS_REVIEW;
             $podcast->fill($validated);
             $podcast->save();
-        } catch (\Exception $e) {
-            return $this->response->errorInternal('Application was unable to save this podcast');
         } catch (\Throwable $t) {
             return $this->response->errorInternal('Application was unable to save this podcast');
         }
@@ -101,8 +97,6 @@ class PodcastController extends BaseController
             $result = $podcast->findOrFail($id);
         } catch (ModelNotFoundException $e) {
             throw new \Dingo\Api\Exception\ResourceException('Application can\'t find podcast with such id');
-        } catch (\Exception $e) {
-            return $this->response->errorInternal('Application was unable to show this podcast');
         } catch (\Throwable $t) {
             return $this->response->errorInternal('Application was unable to show this podcast');
         }
@@ -126,8 +120,6 @@ class PodcastController extends BaseController
                 ->save();
         } catch (ModelNotFoundException $e) {
             return $this->response->errorNotFound('Application can\'t find podcast with such id');
-        } catch (\Exception $e) {
-            return $this->response->errorInternal('Application was unable to save this podcast');
         } catch (\Throwable $t) {
             return $this->response->errorInternal('Application was unable to save this podcast');
         }
@@ -145,12 +137,11 @@ class PodcastController extends BaseController
     public function destroy(Podcast $podcast, int $id)
     {
         try {
-            $result = $podcast->findOrFail($id)
+            $result = $podcast->newQueryWithoutScope(PodcastScope::class)
+                ->findOrFail($id)
                 ->delete();
         } catch (ModelNotFoundException $e) {
             return $this->response->errorNotFound('Application can\'t find podcast with such id');
-        } catch (\Exception $e) {
-            return $this->response->errorInternal('Application was unable to save this podcast');
         } catch (\Throwable $t) {
             return $this->response->errorInternal('Application was unable to save this podcast');
         }
@@ -173,8 +164,6 @@ class PodcastController extends BaseController
             $result->save();
         } catch (ModelNotFoundException $e) {
             return $this->response->errorNotFound('Application can\'t find podcast with such id');
-        } catch (\Exception $e) {
-            return $this->response->errorInternal('Application was unable to approve this podcast');
         } catch (\Throwable $t) {
             return $this->response->errorInternal('Application was unable to approve this podcast');
         }
