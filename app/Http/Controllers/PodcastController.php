@@ -102,7 +102,9 @@ class PodcastController extends BaseController
         } catch (ModelNotFoundException $e) {
             throw new \Dingo\Api\Exception\ResourceException('Application can\'t find podcast with such id');
         } catch (\Exception $e) {
-            throw new \Dingo\Api\Exception\ResourceException('Application was unable process this podcast');
+            return $this->response->errorInternal('Application was unable to show this podcast');
+        } catch (\Throwable $t) {
+            return $this->response->errorInternal('Application was unable to show this podcast');
         }
 
         return $this->response->item($result, new PodcastTransformer);
@@ -123,7 +125,7 @@ class PodcastController extends BaseController
                 ->fill($request->validated())
                 ->save();
         } catch (ModelNotFoundException $e) {
-            throw new \Dingo\Api\Exception\ResourceException('Application can\'t find podcast with such id');
+            return $this->response->errorNotFound('Application can\'t find podcast with such id');
         } catch (\Exception $e) {
             return $this->response->errorInternal('Application was unable to save this podcast');
         } catch (\Throwable $t) {
@@ -146,7 +148,7 @@ class PodcastController extends BaseController
             $result = $podcast->findOrFail($id)
                 ->delete();
         } catch (ModelNotFoundException $e) {
-            throw new \Dingo\Api\Exception\ResourceException('Application can\'t find podcast with such id');
+            return $this->response->errorNotFound('Application can\'t find podcast with such id');
         } catch (\Exception $e) {
             return $this->response->errorInternal('Application was unable to save this podcast');
         } catch (\Throwable $t) {
@@ -170,7 +172,7 @@ class PodcastController extends BaseController
             $result->status = Podcast::STATUS_PUBLISHED;
             $result->save();
         } catch (ModelNotFoundException $e) {
-            throw new \Dingo\Api\Exception\ResourceException('Application can\'t find podcast with such id');
+            return $this->response->errorNotFound('Application can\'t find podcast with such id');
         } catch (\Exception $e) {
             return $this->response->errorInternal('Application was unable to approve this podcast');
         } catch (\Throwable $t) {
