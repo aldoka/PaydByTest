@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Transformers\PodcastTransformer;
 use App\Podcast;
 use Illuminate\Http\Request;
 
@@ -9,7 +10,7 @@ use Illuminate\Http\Request;
  * Class PodcastController
  * @package App\Http\Controllers
  */
-class PodcastController extends \BaseController
+class PodcastController extends BaseController
 {
 
     /** @var int  */
