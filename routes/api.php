@@ -13,11 +13,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
 
 $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', function ($api) {
-    $api->get('podcasts/{id}', ['as' => 'podcasts.show', 'uses' => 'App\Http\Controllers\PodcastController@show']);
+    $api->get('podcasts/{id}', 'App\Http\Controllers\PodcastController@show');
+    $api->get('podcasts', 'App\Http\Controllers\PodcastController@index');
 });

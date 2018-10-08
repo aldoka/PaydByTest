@@ -23,7 +23,8 @@ class PodcastController extends BaseController
      */
     public function index()
     {
-        return Podcast::all();
+        $podcasts = Podcast::paginate(self::ITEMS_PER_PAGE);
+        return $this->response->paginator($podcasts, new PodcastTransformer);
     }
 
     /**
@@ -41,11 +42,12 @@ class PodcastController extends BaseController
      * Display the specified podcast.
      *
      * @param  \App\Podcast  $podcast
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Podcast $podcast)
+    public function show(Podcast $podcast, int $id)
     {
-        return $podcast;
+        return $this->response->item($podcast->findOrFail($id), new PodcastTransformer);
     }
 
     /**
