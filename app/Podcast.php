@@ -38,7 +38,7 @@ class Podcast extends Model
     public $timestamps = true;
 
     /** @var array */
-    protected $fillable = ['name', 'description', 'url', 'image', 'status', 'created_at', 'updated_at', 'deleted_at'];
+    protected $fillable = ['name', 'description', 'marketing_url', 'url', 'image', 'status', 'created_at', 'updated_at', 'deleted_at'];
     /** @var array  */
     protected $hidden = ['deleted_at'];
 

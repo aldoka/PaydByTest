@@ -17,10 +17,11 @@ class PodcastsTableSeeder extends Seeder
         DB::table('podcasts')->insert(
             [
                 'name' => 'The first simple published Podcast',
-                'url' => 'http://paydby.com/published',
-                'image' => '/podcasts/dummy.jpg',
+                'description'   => 'A simple description. It is published.',
+                'marketing_url' => 'http://paydby.com/published-marketing',
+                'url'    => 'http://paydby.com/published',
+                'image'  => '/podcasts/dummy.jpg',
                 'status' => Podcast::STATUS_PUBLISHED,
-                'description' => 'A simple description. It is published.',
                 'created_at' => $now,
                 'updated_at' => $now,
             ]
@@ -29,10 +30,11 @@ class PodcastsTableSeeder extends Seeder
         DB::table('podcasts')->insert(
             [
                 'name' => 'The second Podcast is under review',
-                'url' => 'http://paydby.com/review',
-                'image' => '/podcasts/dummy2.jpg',
+                'description'   => 'It is under review.',
+                'marketing_url' => 'http://paydby.com/review-marketing',
+                'url'    => 'http://paydby.com/review',
+                'image'  => '/podcasts/dummy2.jpg',
                 'status' => Podcast::STATUS_REVIEW,
-                'description' => 'It is under review.',
                 'created_at' => $now,
                 'updated_at' => $now,
             ]
