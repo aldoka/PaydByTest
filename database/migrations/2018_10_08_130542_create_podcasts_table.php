@@ -18,9 +18,9 @@ class CreatePodcastsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->string('name', 256)->unique();
+            $table->string('name', 128)->unique();
             $table->string('description', 1000);
-            $table->string('url', 256);
+            $table->string('url', 128)->unique();
             $table->string('image', 256)->nullable();
             $table->unsignedTinyInteger('status')->default(0);
         });
