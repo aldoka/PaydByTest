@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Podcast
@@ -30,11 +31,40 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Podcast extends Model
 {
+
+    use SoftDeletes;
+
+    /** @var bool  */
+    public $timestamps = true;
+
+    /** @var array */
+    protected $fillable = ['name', 'description', 'url', 'image', 'status', 'created_at', 'updated_at', 'deleted_at'];
+    /** @var array  */
+    protected $hidden = ['deleted_at'];
+
+    /** @var int  */
+    const STATUS_REVIEW = 0;
+    /** @var int  */
+    const STATUS_PUBLISHED = 1;
+
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function comments() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany('App\Comment');
+    }
+
+
+    /**
+     * @return array
+     */
+    public static function getAllStatuses() : array
+    {
+        return [
+            self::STATUS_REVIEW,
+            self::STATUS_PUBLISHED,
+        ];
     }
 }
