@@ -157,4 +157,28 @@ class PodcastController extends BaseController
     }
 
 
+    /**
+     * Approves podcast and publish it.
+     *
+     * @param Podcast $podcast
+     * @param int $id
+     */
+    public function approve(Podcast $podcast, int $id) {
+        try {
+            $result = $podcast::withoutGlobalScope(PodcastScope::class)
+                ->findOrFail($id);
+            $result->status = Podcast::STATUS_PUBLISHED;
+            $result->save();
+        } catch (ModelNotFoundException $e) {
+            throw new \Dingo\Api\Exception\ResourceException('Application can\'t find podcast with such id');
+        } catch (\Exception $e) {
+            return $this->response->errorInternal('Application was unable to approve this podcast');
+        } catch (\Throwable $t) {
+            return $this->response->errorInternal('Application was unable to approve this podcast');
+        }
+
+        return $this->response->noContent();
+    }
+
+
 }
