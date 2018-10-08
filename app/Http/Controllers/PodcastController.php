@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Transformers\PodcastTransformer;
 use App\Podcast;
+use App\Scopes\PodcastScope;
 use Illuminate\Http\Request;
 
 /**
@@ -16,14 +17,27 @@ class PodcastController extends BaseController
     /** @var int  */
     const ITEMS_PER_PAGE = 12;
 
+    /** @var string  */
+    const QUERY_STATUS_PUBLISHED = 'published';
+    /** @var string  */
+    const QUERY_STATUS_REVIEW = 'review';
+
     /**
      * Display a list of Podcasts.
      *
+     * @param string $status
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(string $status)
     {
-        $podcasts = Podcast::paginate(self::ITEMS_PER_PAGE);
+        if ($status === self::QUERY_STATUS_REVIEW) {
+            $podcasts = Podcast::withoutGlobalScope(PodcastScope::class)
+                ->where('status', Podcast::STATUS_REVIEW)
+                ->paginate(self::ITEMS_PER_PAGE);
+        } else {
+            $podcasts = Podcast::paginate(self::ITEMS_PER_PAGE);
+        }
+
         return $this->response->paginator($podcasts, new PodcastTransformer);
     }
 
