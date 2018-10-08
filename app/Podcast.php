@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\PodcastScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -76,4 +77,20 @@ class Podcast extends Model
             self::STATUS_PUBLISHED,
         ];
     }
+
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        $publishedScope = new PodcastScope;
+        static::addGlobalScope($publishedScope);
+    }
+
+
 }
