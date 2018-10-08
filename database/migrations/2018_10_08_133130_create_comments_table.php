@@ -15,8 +15,6 @@ class CreateCommentsTable extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
-            $table->softDeletes();
 
             $table->string('author_name', 64);
             $table->string('author_email', 64);
@@ -28,6 +26,9 @@ class CreateCommentsTable extends Migration
             $table->unsignedInteger('podcast_id');
             $table->foreign('podcast_id')
                 ->references('id')->on('podcasts');
+
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

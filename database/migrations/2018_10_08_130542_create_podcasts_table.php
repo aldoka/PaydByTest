@@ -15,14 +15,15 @@ class CreatePodcastsTable extends Migration
     {
         Schema::create('podcasts', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
-            $table->softDeletes();
 
             $table->string('name', 128)->unique();
             $table->string('description', 1000);
             $table->string('url', 128)->unique();
             $table->string('image', 256)->nullable();
             $table->unsignedTinyInteger('status')->default(0);
+
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
