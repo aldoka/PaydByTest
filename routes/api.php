@@ -27,7 +27,7 @@ $api->version('v1', ['middleware' => 'api.throttle'], function (\Dingo\Api\Routi
     $api->post('podcasts', ['as' => 'podcasts.store', 'uses' => 'App\Http\Controllers\PodcastController@store']);
     $api->put('podcasts/{id}', ['as' => 'podcasts.update', 'uses' => 'App\Http\Controllers\PodcastController@update']);
     $api->delete('podcasts/{id}', ['as' => 'podcasts.destroy', 'uses' => 'App\Http\Controllers\PodcastController@destroy']);
-    $api->get('approve-podcasts/{id}', ['as' => 'podcasts.approve', 'uses' => 'App\Http\Controllers\PodcastController@approve']);
-    $api->post('comment/{podcastId}', ['as' => 'comment.strore', 'uses' => 'App\Http\Controllers\CommentController@store']);
-    $api->delete('flag-comment/{id}', ['as' => 'comment.destroy', 'uses' => 'App\Http\Controllers\CommentController@destroy']);
+    $api->get('podcasts/approve/{id}', ['as' => 'podcasts.approve', 'uses' => 'App\Http\Controllers\PodcastController@approve']);
+    $api->post('comments/{podcastId}', ['as' => 'comment.strore', 'uses' => 'App\Http\Controllers\CommentController@store']);
+    $api->delete('comments/{id}', ['as' => 'comment.destroy', 'uses' => 'App\Http\Controllers\CommentController@destroy']);
 });
