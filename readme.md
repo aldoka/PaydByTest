@@ -69,7 +69,7 @@ FORMAT: 1A
 # Podcasts [/api/podcasts]
 Class PodcastController
 
-## Display a list of Podcasts. [GET /api/podcasts/published]
+## Display a list of Podcasts. [GET /api/podcasts/published] [GET /api/podcasts/review]
 
 
 ## Store a newly created podcast in storage. [POST /api/podcasts]
