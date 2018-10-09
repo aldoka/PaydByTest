@@ -64,7 +64,7 @@ FORMAT: 1A
 
 + Open Postman and start testing, using documentation below. Pay attention to `Accept` header.
 
-+ If you want to browse GET end points in browser, please set `API_STRICT=true` in your `.env` file
++ If you want to browse GET end points in browser, please set `API_STRICT=true` in your `.env` file and start with this URL `/api/podcasts/published`
 
 # Podcasts [/api/podcasts]
 Class PodcastController
