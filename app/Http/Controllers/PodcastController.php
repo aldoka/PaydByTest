@@ -10,6 +10,8 @@ use App\Scopes\PodcastScope;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * Class PodcastController
@@ -69,11 +71,19 @@ class PodcastController extends BaseController
      * @param Podcast podcast
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePodcast $request, Podcast $podcast)
+    public function store(StorePodcast $request, Podcast $podcast, Storage $storage)
     {
         try {
             $validated = $request->validated();
             $validated['status'] = Podcast::STATUS_REVIEW;
+
+            $image = $request->file('image');
+            if (empty($image) === false) {
+                $fileName = Str::random(10) . '.' . substr($image->getMimeType(), strlen('image/'));
+                $path = $request->file('image')->storePubliclyAs('public', $fileName);
+                $validated['image'] = $fileName;
+            }
+
             $podcast->fill($validated);
             $podcast->save();
         } catch (\Throwable $t) {

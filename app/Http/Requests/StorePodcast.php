@@ -35,7 +35,7 @@ class StorePodcast extends FormRequest
             'description' => 'required|min:4|max:1000',
             'marketing_url' => 'nullable|url|unique:podcasts|max:128',
             'feed_url' => 'required|url|unique:podcasts|max:128',
-            'image' => 'nullable|max:256',
+            'image' => 'nullable|is_base64_image',
             'status' => 'nullable|' . Rule::in(...Podcast::getAllStatuses()),
         ];
     }
