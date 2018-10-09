@@ -7,6 +7,11 @@ use App\Http\Requests\StoreComment;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
+/**
+ * Class CommentController
+ * @package App\Http\Controllers
+ * @Resource("Comments", uri="/api/comments")
+ */
 class CommentController extends BaseController
 {
 
@@ -17,6 +22,10 @@ class CommentController extends BaseController
      * @param Comment $comment
      * @param int $podcastId
      * @return \Illuminate\Http\Response
+     * @post("/{podcastId}")
+     * @Versions({"v1"})
+     * @Request({"author_name":"foo","author_email":"bar@foo.gmail","comment":"blablabla"}, headers={"Accept": "application/vnd.paydbytest.v1+json"}))
+     * @Response(201, body={})
      */
     public function store(StoreComment $request, Comment $comment, int $podcastId)
     {
@@ -40,6 +49,10 @@ class CommentController extends BaseController
      * @param  Comment  $comment
      * @param  int $id
      * @return \Illuminate\Http\Response
+     * @Delete("/{id}")
+     * @Versions({"v1"})
+     * @Request({"id":"1"}, headers={"Accept": "application/vnd.paydbytest.v1+json"}))
+     * @Response(204)
      */
     public function destroy(Comment $comment, int $id)
     {

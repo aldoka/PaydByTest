@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 /**
  * Class PodcastController
  * @package App\Http\Controllers
+ * @Resource("Podcasts", uri="/api/podcasts")
  */
 class PodcastController extends BaseController
 {
@@ -39,6 +40,8 @@ class PodcastController extends BaseController
      *
      * @param string $status
      * @return \Illuminate\Http\Response
+     * @Get("/published")
+     * @Versions({"v1"})
      */
     public function index(string $status)
     {
@@ -70,6 +73,10 @@ class PodcastController extends BaseController
      * @param  StorePodcast $request
      * @param Podcast podcast
      * @return \Illuminate\Http\Response
+     * @post("/")
+     * @Versions({"v1"})
+     * @Request({"name":"foo","description":"bar","feed_url":"http://test.gmail/test"}, headers={"Accept": "application/vnd.paydbytest.v1+json"}))
+     * @Response(201, body={})
      */
     public function store(StorePodcast $request, Podcast $podcast, Storage $storage)
     {
@@ -99,6 +106,10 @@ class PodcastController extends BaseController
      * @param  \App\Podcast  $podcast
      * @param int $id
      * @return \Illuminate\Http\Response
+     * @get("/{id}")
+     * @Versions({"v1"})
+     * @Request({"id":"1"}, headers={"Accept": "application/vnd.paydbytest.v1+json"}))
+     * @Response(201, body={})
      */
     public function show(Podcast $podcast, int $id)
     {
@@ -121,6 +132,10 @@ class PodcastController extends BaseController
      * @param  \App\Podcast  $podcast
      * @param  int $id
      * @return \Illuminate\Http\Response
+     * @put("/{id}")
+     * @Versions({"v1"})
+     * @Request({"id":"1"}, headers={"Accept": "application/vnd.paydbytest.v1+json"}))
+     * @Response(204)
      */
     public function update(UpdatePodcast $request, Podcast $podcast, int $id)
     {
@@ -143,6 +158,10 @@ class PodcastController extends BaseController
      * @param  \App\Podcast  $podcast
      * @param  int $id
      * @return \Illuminate\Http\Response
+     * @Delete("/{id}")
+     * @Versions({"v1"})
+     * @Request({"id":"1"}, headers={"Accept": "application/vnd.paydbytest.v1+json"}))
+     * @Response(204)
      */
     public function destroy(Podcast $podcast, int $id)
     {
@@ -165,6 +184,10 @@ class PodcastController extends BaseController
      *
      * @param Podcast $podcast
      * @param int $id
+     * @get("/approve/{id}")
+     * @Versions({"v1"})
+     * @Request({"id":"1"}, headers={"Accept": "application/vnd.paydbytest.v1+json"}))
+     * @Response(201, body={})
      */
     public function approve(Podcast $podcast, int $id) {
         try {
