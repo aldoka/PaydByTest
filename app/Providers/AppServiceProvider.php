@@ -22,6 +22,10 @@ class AppServiceProvider extends ServiceProvider
                 if ($value instanceof UploadedFile) {
                     /** @var UploadedFile $value*/
                     $mimeType = $value->getMimeType();
+                } else if (is_string($value)) {
+                    $image = base64_decode($value);
+                    $f = finfo_open();
+                    $mimeType = finfo_buffer($f, $image, FILEINFO_MIME_TYPE);
                 } else {
                     throw new ValidationHttpException();
                 }

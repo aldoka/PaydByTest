@@ -86,8 +86,24 @@ class PodcastController extends BaseController
 
             $image = $request->file('image');
             if (empty($image) === false) {
-                $fileName = Str::random(10) . '.' . substr($image->getMimeType(), strlen('image/'));
+                $fileName = $this->generateFileName($image->getMimeType());
                 $path = $request->file('image')->storePubliclyAs('public', $fileName);
+                $validated['image'] = $fileName;
+            }
+
+            $image = $request->get('image');
+            if (empty($image) === false) {
+                $decodedImage = base64_decode($image);
+                $f = finfo_open();
+                $mimeType = finfo_buffer($f, $decodedImage, FILEINFO_MIME_TYPE);
+
+                $fileName = $this->generateFileName($mimeType);
+                $path = public_path('storage') . '/' . $fileName;
+                $fileStream = fopen($path , "wb");
+
+                fwrite($fileStream, $decodedImage);
+                fclose($fileStream);
+
                 $validated['image'] = $fileName;
             }
 
@@ -99,6 +115,17 @@ class PodcastController extends BaseController
 
         return $this->response->created();
     }
+
+
+    /**
+     * @param string $mimeType
+     * @return string
+     */
+    private function generateFileName(string $mimeType) : string
+    {
+        return Str::random(10) . '.' .  substr($mimeType, strlen('image/'));
+    }
+
 
     /**
      * Display the specified podcast.
