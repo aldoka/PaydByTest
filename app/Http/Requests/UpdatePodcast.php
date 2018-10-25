@@ -33,12 +33,12 @@ class UpdatePodcast extends FormRequest
         // TODO define and implement regexp rules for 'name' and 'description ' fields. No ASCII and so on.
         $id = (int)$this->route('id');
         return [
-            'name' => 'nullable|unique:podcasts,name,' . $id . '|min:4|max:128',
-            'description' => 'nullable|min:4|max:1000',
-            'marketing_url' => 'nullable|url|unique:podcasts,marketing_url,' . $id . '|max:128',
-            'feed_url' => 'nullable|url|unique:podcasts,feed_url,' . $id . '|max:128',
-            'image' => 'nullable|max:256',
-            'status' => 'nullable|' . Rule::in(...Podcast::getAllStatuses()),
+            'name' => 'filled|unique:podcasts,name,' . $id . '|min:4|max:128',
+            'description' => 'filled|min:4|max:1000',
+            'marketing_url' => 'filled|url|unique:podcasts,marketing_url,' . $id . '|max:128',
+            'feed_url' => 'filled|url|unique:podcasts,feed_url,' . $id . '|max:128',
+            'image' => 'filled|max:256',
+            'status' => 'filled|' . Rule::in(...Podcast::getAllStatuses()),
         ];
     }
 }
