@@ -103,6 +103,21 @@ class PodcastTest extends TestCase
     }
 
 
+    /**
+     * Data provider
+     *
+     * @return array
+     */
+    public function notExistingPodcastId(): array
+    {
+        do {
+            $id = mt_rand(1000, 10000);
+        } while (DB::table('podcasts')->find($id) !== null);
+
+        return ['not existing podcast' => [$id]];
+    }
+
+
     public function testGetIndexSuccess(): void
     {
         $response = $this->getJson(self::GET_INDEX, self::CORRECT_HEADERS);
@@ -159,12 +174,15 @@ class PodcastTest extends TestCase
     }
 
 
-    public function testGetShowNotFound(): void
+    /**
+     * @dataProvider notExistingPodcastId
+     * @dataProvider reviewPodcastId
+     *
+     * @param int $podcastId
+     */
+    public function testGetShowNotFound(int $podcastId): void
     {
-        /** @var Podcast $existingPodcast */
-        $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
-
-        $response = $this->getJson(self::GET_SHOW . '/' . ($existingPodcast->id + 1000), self::CORRECT_HEADERS);
+        $response = $this->getJson(self::GET_SHOW . '/' . $podcastId, self::CORRECT_HEADERS);
 
         $response->assertNotFound();
     }
@@ -185,6 +203,7 @@ class PodcastTest extends TestCase
 
     /**
      * @dataProvider incorrectPodcasts
+     *
      * @param array $podcast
      */
     public function testPutUpdateUnprocessableEntity(array $podcast): void
@@ -198,14 +217,16 @@ class PodcastTest extends TestCase
     }
 
 
-    public function testPutUpdateNotFound(): void
+    /**
+     * @dataProvider notExistingPodcastId
+     *
+     * @param int $podcastId
+     */
+    public function testPutUpdateNotFound(int $podcastId): void
     {
         $podcast = $this->_generateCorrectPodcast();
 
-        /** @var Podcast $existingPodcast */
-        $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
-
-        $response = $this->putJson(self::PUT_ITEM . '/' . ((int)$existingPodcast->id + 1000), $podcast, self::CORRECT_HEADERS);
+        $response = $this->putJson(self::PUT_ITEM . '/' . $podcastId, $podcast, self::CORRECT_HEADERS);
 
         $response->assertNotFound();
     }
@@ -223,11 +244,14 @@ class PodcastTest extends TestCase
     }
 
 
-    public function testDeleteDestroyNotFound(): void
+    /**
+     * @dataProvider notExistingPodcastId
+     *
+     * @param int $podcastId
+     */
+    public function testDeleteDestroyNotFound(int $podcastId): void
     {
-        /** @var Podcast $existingPodcast */
-        $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
-        $responseNotExists = $this->deleteJson(self::DELETE_ITEM . '/' . ($existingPodcast->id + 1000), [], self::CORRECT_HEADERS);
+        $responseNotExists = $this->deleteJson(self::DELETE_ITEM . '/' . $podcastId, [], self::CORRECT_HEADERS);
 
         $responseNotExists->assertNotFound();
     }
