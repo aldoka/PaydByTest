@@ -8,13 +8,11 @@
         "dingo/api": "2.0.0-alpha1",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.7.*",
-        "laravel/passport": "^7.0",
         "laravel/tinker": "^1.0",
-        "league/fractal": "^0.17.0",
-        "mpociot/laravel-apidoc-generator": "^2.1"
+        "league/fractal": "^0.17.0"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.5",
+        "barryvdh/laravel-ide-helper": "^2.5.1",
         "doctrine/dbal": "^2.8",
         "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.4",
