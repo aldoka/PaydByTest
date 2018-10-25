@@ -21,5 +21,5 @@ $factory->define(
             'status'   => $faker->randomElement(Podcast::getAllStatuses()),
         ];
     }
-);
+)->state(Podcast::class, 'published', ['status' => Podcast::STATUS_PUBLISHED]);
 

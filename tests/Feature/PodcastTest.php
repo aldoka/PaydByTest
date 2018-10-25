@@ -34,17 +34,15 @@ class PodcastTest extends TestCase
     /**
      * Generates a correct podcast with the correct image and published status
      *
-     * @param bool $asArray
-     * @return Podcast|array
+     * @return array
      */
-    private function _generateCorrectPodcast(bool $asArray = true)
+    private function _generateCorrectPodcast() : array
     {
         /** @var \App\Podcast $correctPodcast */
         $correctPodcast = factory(\App\Podcast::class)->make();
         $correctPodcast->image = self::CORRECT_IMAGE;
-        $correctPodcast->status = Podcast::STATUS_PUBLISHED;
 
-        return ($asArray) ? $correctPodcast->toArray() : $correctPodcast;
+        return $correctPodcast->toArray();
     }
 
 
@@ -160,8 +158,7 @@ class PodcastTest extends TestCase
     public function testGetShowSuccess(array $headers) : void
     {
         /** @var Podcast $existingPodcast */
-        $existingPodcast = $this->_generateCorrectPodcast(false);
-        $existingPodcast->save();
+        $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
 
         $response = $this->getJson(self::GET_SHOW . '/' . $existingPodcast->id, $headers);
 
@@ -175,8 +172,7 @@ class PodcastTest extends TestCase
     public function testGetShowBadRequest(array $headers) : void
     {
         /** @var Podcast $existingPodcast */
-        $existingPodcast = $this->_generateCorrectPodcast(false);
-        $existingPodcast->save();
+        $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
 
         $response = $this->getJson(self::GET_SHOW . '/' . $existingPodcast->id, $headers);
 
@@ -190,8 +186,7 @@ class PodcastTest extends TestCase
     public function testGetShowNotFound(array $headers) : void
     {
         /** @var Podcast $existingPodcast */
-        $existingPodcast = $this->_generateCorrectPodcast(false);
-        $existingPodcast->save();
+        $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
 
         $response = $this->getJson(self::GET_SHOW . '/' . ($existingPodcast->id + 100), $headers);
 
@@ -205,8 +200,7 @@ class PodcastTest extends TestCase
         $headers = current(current(self::CORRECT_HEADERS));
 
         /** @var Podcast $existingPodcast */
-        $existingPodcast = $this->_generateCorrectPodcast(false);
-        $existingPodcast->save();
+        $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
 
         $response = $this->putJson(self::PUT_ITEM . '/' . $existingPodcast->id, $podcast, $headers);
 
@@ -220,8 +214,7 @@ class PodcastTest extends TestCase
     public function testPutUpdateUnprocessableEntity(array $podcast, array $headers) : void
     {
         /** @var Podcast $existingPodcast */
-        $existingPodcast = $this->_generateCorrectPodcast(false);
-        $existingPodcast->save();
+        $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
 
         $response = $this->putJson(self::PUT_ITEM . '/' . $existingPodcast->id, $podcast, $headers);
 
@@ -235,8 +228,7 @@ class PodcastTest extends TestCase
         $headers = current(current(self::CORRECT_HEADERS));
 
         /** @var Podcast $existingPodcast */
-        $existingPodcast = $this->_generateCorrectPodcast(false);
-        $existingPodcast->save();
+        $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
 
         $response = $this->putJson(self::PUT_ITEM . '/' . ((int)$existingPodcast->id + 1000), $podcast, $headers);
 
