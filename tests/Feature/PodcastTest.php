@@ -34,12 +34,13 @@ class PodcastTest extends TestCase
     /**
      * Generates a correct podcast with the correct image and published status
      *
+     * @param array $predefinedValues
      * @return array
      */
-    private function _generateCorrectPodcast() : array
+    private function _generateCorrectPodcast(array $predefinedValues = array()) : array
     {
         /** @var \App\Podcast $correctPodcast */
-        $correctPodcast = factory(\App\Podcast::class)->make();
+        $correctPodcast = factory(\App\Podcast::class)->make($predefinedValues);
         $correctPodcast->image = self::CORRECT_IMAGE;
 
         return $correctPodcast->toArray();
@@ -71,16 +72,13 @@ class PodcastTest extends TestCase
     {
         $result = [];
         foreach (self::CORRECT_HEADERS as $explanation => $headers) {
-            $noNamePodcast = $this->_generateCorrectPodcast();
-            $noNamePodcast['name'] = null;
+            $noNamePodcast = $this->_generateCorrectPodcast(['name' => null]);
             $result ['no name ' . $explanation]= [$noNamePodcast, current($headers)];
 
-            $noFeedUrlPodcast = $this->_generateCorrectPodcast();
-            $noFeedUrlPodcast['feed_url'] = null;
+            $noFeedUrlPodcast = $this->_generateCorrectPodcast(['feed_url' => null]);
             $result ['no feed url ' . $explanation]= [$noFeedUrlPodcast, current($headers)];
 
-            $noDescriptionPodcast = $this->_generateCorrectPodcast();
-            $noDescriptionPodcast['description'] = null;
+            $noDescriptionPodcast = $this->_generateCorrectPodcast(['description' => null]);
             $result ['no description ' . $explanation]= [$noDescriptionPodcast, current($headers)];
         }
 
