@@ -12,16 +12,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class PodcastTest extends TestCase
 {
 
-    use RefreshDatabase;
-
     const GET_INDEX = self::BASE_URI . '/podcasts/published';
-    const GET_SHOW  = self::BASE_URI . '/podcasts';
+    const GET_SHOW = self::BASE_URI . '/podcasts';
     const POST_ITEM = self::BASE_URI . '/podcasts';
-    const PUT_ITEM  = self::BASE_URI . '/podcasts';
+    const PUT_ITEM = self::BASE_URI . '/podcasts';
+    const DELETE_ITEM = self::BASE_URI . '/podcasts';
 
-    const CORRECT_HEADERS = [
-        'accept vnd.podcast.v1' => [['Accept' => 'application/vnd.podcast.v1+json']],
-    ];
+    const CORRECT_HEADERS = ['Accept' => 'application/vnd.podcast.v1+json'];
 
     const INCORRECT_HEADERS = [
         'no headers' => [[]],
@@ -32,12 +29,12 @@ class PodcastTest extends TestCase
 
 
     /**
-     * Generates a correct podcast with the correct image and published status
+     * Generates a correct podcast with the correct image
      *
      * @param array $predefinedValues
      * @return array
      */
-    private function _generateCorrectPodcast(array $predefinedValues = array()) : array
+    private function _generateCorrectPodcast(array $predefinedValues = array()): array
     {
         /** @var \App\Podcast $correctPodcast */
         $correctPodcast = factory(\App\Podcast::class)->make($predefinedValues);
@@ -48,52 +45,37 @@ class PodcastTest extends TestCase
 
 
     /**
+     * Data provider
+     *
      * @return array
      */
-    public function correctHeaders() : array
-    {
-        return self::CORRECT_HEADERS;
-    }
-
-
-    /**
-     * @return array
-     */
-    public function incorrectHeaders() : array
+    public function incorrectHeaders(): array
     {
         return self::INCORRECT_HEADERS;
     }
 
 
     /**
+     * Data provider
+     *
      * @return array
      */
-    public function incorrectPodcastsCorrectHeaders() : array
+    public function incorrectPodcasts(): array
     {
-        $result = [];
-        foreach (self::CORRECT_HEADERS as $explanation => $headers) {
-            $noNamePodcast = $this->_generateCorrectPodcast(['name' => null]);
-            $result ['no name ' . $explanation]= [$noNamePodcast, current($headers)];
+        $result = [
+            'no name' => [$this->_generateCorrectPodcast(['name' => null])],
+            'no feed url' => [$this->_generateCorrectPodcast(['feed_url' => null])],
+            'no description ' => [$this->_generateCorrectPodcast(['description' => null])],
 
-            $noFeedUrlPodcast = $this->_generateCorrectPodcast(['feed_url' => null]);
-            $result ['no feed url ' . $explanation]= [$noFeedUrlPodcast, current($headers)];
-
-            $noDescriptionPodcast = $this->_generateCorrectPodcast(['description' => null]);
-            $result ['no description ' . $explanation]= [$noDescriptionPodcast, current($headers)];
-        }
+        ];
 
         return $result;
     }
 
 
-    /**
-     * @dataProvider correctHeaders
-     *
-     * @param array $correctHeaders
-     */
-    public function testGetIndexSuccess(array $correctHeaders) : void
+    public function testGetIndexSuccess(): void
     {
-        $response = $this->getJson(self::GET_INDEX, $correctHeaders);
+        $response = $this->getJson(self::GET_INDEX, self::CORRECT_HEADERS);
 
         $response->assertOk();
     }
@@ -104,7 +86,7 @@ class PodcastTest extends TestCase
      *
      * @param array $incorrectHeaders
      */
-    public function testGetIndexBadRequest(array $incorrectHeaders) : void
+    public function testGetIndexBadRequest(array $incorrectHeaders): void
     {
         $response = $this->getJson(self::GET_INDEX, [], $incorrectHeaders);
 
@@ -113,142 +95,89 @@ class PodcastTest extends TestCase
     }
 
 
-    public function testPostStoreSuccess() : void
+    public function testPostStoreSuccess(): void
     {
         $podcast = $this->_generateCorrectPodcast();
-        $headers = current(current(self::CORRECT_HEADERS));
 
-        $response = $this->postJson(self::POST_ITEM, $podcast, $headers);
+        $response = $this->postJson(self::POST_ITEM, $podcast, self::CORRECT_HEADERS);
 
         $response->assertStatus(Response::HTTP_CREATED);
     }
 
 
     /**
-     * @dataProvider incorrectHeaders
-     */
-    public function testPostStoreBadRequest(array $headers) : void
-    {
-        $podcast = $this->_generateCorrectPodcast();
-
-        $response = $this->postJson(self::POST_ITEM, $podcast, $headers);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        $response->assertJson(['message' => "Accept header could not be properly parsed because of a strict matching process."]);
-    }
-
-
-    /**
-     * @dataProvider incorrectPodcastsCorrectHeaders
+     * @dataProvider incorrectPodcasts
      *
      * @param array $podcast
-     * @param array $headers
      */
-    public function testPostStoreUnprocessableEntity(array $podcast, array $headers) : void
+    public function testPostStoreUnprocessableEntity(array $podcast): void
     {
-        $response = $this->postJson(self::POST_ITEM, $podcast, $headers);
+        $response = $this->postJson(self::POST_ITEM, $podcast, self::CORRECT_HEADERS);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
 
-    /**
-     * @dataProvider correctHeaders
-     */
-    public function testGetShowSuccess(array $headers) : void
+    public function testGetShowSuccess(): void
     {
         /** @var Podcast $existingPodcast */
         $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
 
-        $response = $this->getJson(self::GET_SHOW . '/' . $existingPodcast->id, $headers);
+        $response = $this->getJson(self::GET_SHOW . '/' . $existingPodcast->id, self::CORRECT_HEADERS);
 
         $response->assertOk();
     }
 
 
-    /**
-     * @dataProvider incorrectHeaders
-     */
-    public function testGetShowBadRequest(array $headers) : void
+    public function testGetShowNotFound(): void
     {
         /** @var Podcast $existingPodcast */
         $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
 
-        $response = $this->getJson(self::GET_SHOW . '/' . $existingPodcast->id, $headers);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-    }
-
-
-    /**
-     * @dataProvider correctHeaders
-     */
-    public function testGetShowNotFound(array $headers) : void
-    {
-        /** @var Podcast $existingPodcast */
-        $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
-
-        $response = $this->getJson(self::GET_SHOW . '/' . ($existingPodcast->id + 100), $headers);
+        $response = $this->getJson(self::GET_SHOW . '/' . ($existingPodcast->id + 1000), self::CORRECT_HEADERS);
 
         $response->assertNotFound();
     }
 
 
-    public function testPutUpdateSuccess() : void
+    public function testPutUpdateSuccess(): void
     {
         $podcast = $this->_generateCorrectPodcast();
-        $headers = current(current(self::CORRECT_HEADERS));
 
         /** @var Podcast $existingPodcast */
         $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
 
-        $response = $this->putJson(self::PUT_ITEM . '/' . $existingPodcast->id, $podcast, $headers);
+        $response = $this->putJson(self::PUT_ITEM . '/' . $existingPodcast->id, $podcast, self::CORRECT_HEADERS);
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
 
     /**
-     * @dataProvider incorrectPodcastsCorrectHeaders
+     * @dataProvider incorrectPodcasts
+     * @param array $podcast
      */
-    public function testPutUpdateUnprocessableEntity(array $podcast, array $headers) : void
+    public function testPutUpdateUnprocessableEntity(array $podcast): void
     {
         /** @var Podcast $existingPodcast */
         $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
 
-        $response = $this->putJson(self::PUT_ITEM . '/' . $existingPodcast->id, $podcast, $headers);
+        $response = $this->putJson(self::PUT_ITEM . '/' . $existingPodcast->id, $podcast, self::CORRECT_HEADERS);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
 
-    public function testPutUpdateNotFound() : void
+    public function testPutUpdateNotFound(): void
     {
         $podcast = $this->_generateCorrectPodcast();
-        $headers = current(current(self::CORRECT_HEADERS));
 
         /** @var Podcast $existingPodcast */
         $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
 
-        $response = $this->putJson(self::PUT_ITEM . '/' . ((int)$existingPodcast->id + 1000), $podcast, $headers);
+        $response = $this->putJson(self::PUT_ITEM . '/' . ((int)$existingPodcast->id + 1000), $podcast, self::CORRECT_HEADERS);
 
         $response->assertNotFound();
-    }
-
-
-    /**
-     * @dataProvider incorrectHeaders
-     */
-    public function testPutUpdateBadRequest(array $headers) : void
-    {
-        $podcast = $this->_generateCorrectPodcast();
-
-        /** @var Podcast $existingPodcast */
-        $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
-
-        $response = $this->putJson(self::PUT_ITEM . '/' . $existingPodcast->id, $podcast, $headers);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
 
