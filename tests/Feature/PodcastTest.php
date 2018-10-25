@@ -12,11 +12,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class PodcastTest extends TestCase
 {
 
-    const GET_INDEX = self::BASE_URI . '/podcasts/published';
-    const GET_SHOW = self::BASE_URI . '/podcasts';
-    const POST_ITEM = self::BASE_URI . '/podcasts';
-    const PUT_ITEM = self::BASE_URI . '/podcasts';
-    const DELETE_ITEM = self::BASE_URI . '/podcasts';
+    const GET_INDEX    = self::BASE_URI . '/podcasts/published';
+    const GET_SHOW     = self::BASE_URI . '/podcasts';
+    const POST_ITEM    = self::BASE_URI . '/podcasts';
+    const PUT_ITEM     = self::BASE_URI . '/podcasts';
+    const DELETE_ITEM  = self::BASE_URI . '/podcasts';
+    const APPROVE_ITEM = self::BASE_URI . '/podcasts/approve';
 
     const CORRECT_HEADERS = ['Accept' => 'application/vnd.podcast.v1+json'];
 
@@ -254,6 +255,45 @@ class PodcastTest extends TestCase
         $responseNotExists = $this->deleteJson(self::DELETE_ITEM . '/' . $podcastId, [], self::CORRECT_HEADERS);
 
         $responseNotExists->assertNotFound();
+    }
+
+
+    /**
+     * @dataProvider reviewPodcastId
+     *
+     * @param int $podcastId
+     */
+    public function testGetApproveSuccess(int $podcastId): void
+    {
+        $response = $this->getJson(self::APPROVE_ITEM . '/' . $podcastId, self::CORRECT_HEADERS);
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
+
+
+    /**
+     * @dataProvider notExistingPodcastId
+     *
+     * @param int $podcastId
+     */
+    public function testGetApproveNotFound(int $podcastId): void
+    {
+        $responseNotExists = $this->getJson(self::APPROVE_ITEM . '/' . $podcastId, self::CORRECT_HEADERS);
+
+        $responseNotExists->assertNotFound();
+    }
+
+
+    /**
+     * @dataProvider publishedPodcastId
+     *
+     * @param int $podcastId
+     */
+    public function testGetApproveUnprocessable(int $podcastId): void
+    {
+        $responseNotExists = $this->getJson(self::APPROVE_ITEM . '/' . $podcastId, self::CORRECT_HEADERS);
+
+        $responseNotExists->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
 
