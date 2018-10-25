@@ -73,6 +73,36 @@ class PodcastTest extends TestCase
     }
 
 
+    /**
+     * Data provider
+     *
+     * @return array
+     */
+    public function publishedPodcastId() : array
+    {
+        $publishedPodcast = factory(\App\Podcast::class)->state('published')->create();
+
+        return [
+            'published podcast' => [$publishedPodcast->id],
+        ];
+    }
+
+
+    /**
+     * Data provider
+     *
+     * @return array
+     */
+    public function reviewPodcastId(): array
+    {
+        $reviewPodcast = factory(\App\Podcast::class)->state('review')->create();
+
+        return [
+            'review podcast' => [$reviewPodcast->id],
+        ];
+    }
+
+
     public function testGetIndexSuccess(): void
     {
         $response = $this->getJson(self::GET_INDEX, self::CORRECT_HEADERS);
@@ -178,6 +208,28 @@ class PodcastTest extends TestCase
         $response = $this->putJson(self::PUT_ITEM . '/' . ((int)$existingPodcast->id + 1000), $podcast, self::CORRECT_HEADERS);
 
         $response->assertNotFound();
+    }
+
+
+    /**
+     * @dataProvider publishedPodcastId
+     * @dataProvider reviewPodcastId
+     */
+    public function testDeleteDestroySuccess($podcastId): void
+    {
+        $response = $this->deleteJson(self::DELETE_ITEM . '/' . $podcastId, [], self::CORRECT_HEADERS);
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
+
+
+    public function testDeleteDestroyNotFound(): void
+    {
+        /** @var Podcast $existingPodcast */
+        $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
+        $responseNotExists = $this->deleteJson(self::DELETE_ITEM . '/' . ($existingPodcast->id + 1000), [], self::CORRECT_HEADERS);
+
+        $responseNotExists->assertNotFound();
     }
 
 
