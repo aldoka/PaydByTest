@@ -126,12 +126,14 @@ class PodcastTest extends TestCase
     }
 
 
-    public function testPostStoreBadRequest() : void
+    /**
+     * @dataProvider incorrectHeaders
+     */
+    public function testPostStoreBadRequest(array $headers) : void
     {
         $podcast = $this->_generateCorrectPodcast();
-        $headers = current(current(self::CORRECT_HEADERS));
 
-        $response = $this->getJson(self::POST_ITEM, $podcast, $headers);
+        $response = $this->postJson(self::POST_ITEM, $podcast, $headers);
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
         $response->assertJson(['message' => "Accept header could not be properly parsed because of a strict matching process."]);
@@ -233,6 +235,22 @@ class PodcastTest extends TestCase
         $response = $this->putJson(self::PUT_ITEM . '/' . ((int)$existingPodcast->id + 1000), $podcast, $headers);
 
         $response->assertNotFound();
+    }
+
+
+    /**
+     * @dataProvider incorrectHeaders
+     */
+    public function testPutUpdateBadRequest(array $headers) : void
+    {
+        $podcast = $this->_generateCorrectPodcast();
+
+        /** @var Podcast $existingPodcast */
+        $existingPodcast = factory(\App\Podcast::class)->state('published')->create();
+
+        $response = $this->putJson(self::PUT_ITEM . '/' . $existingPodcast->id, $podcast, $headers);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
 
