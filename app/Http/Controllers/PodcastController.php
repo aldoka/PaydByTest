@@ -7,11 +7,13 @@ use App\Http\Requests\UpdatePodcast;
 use App\Http\Transformers\PodcastTransformer;
 use App\Podcast;
 use App\Scopes\PodcastScope;
+use Dingo\Api\Http\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Class PodcastController
@@ -211,7 +213,7 @@ class PodcastController extends BaseController
      *
      * @param Podcast $podcast
      * @param int $id
-     * @get("/approve/{id}")
+     * @get("/podcasts/approve/{id}")
      * @Versions({"v1"})
      * @Request({"id":"1"}, headers={"Accept": "application/vnd.podcast.v1+json"}))
      * @Response(201, body={})
@@ -220,10 +222,17 @@ class PodcastController extends BaseController
         try {
             $result = $podcast::withoutGlobalScope(PodcastScope::class)
                 ->findOrFail($id);
+
+            if ((int)$result->status !== Podcast::STATUS_REVIEW) {
+                throw new HttpException(Response::HTTP_UNPROCESSABLE_ENTITY, 'Podcast is published already');
+            }
+
             $result->status = Podcast::STATUS_PUBLISHED;
             $result->save();
         } catch (ModelNotFoundException $e) {
             return $this->response->errorNotFound('Application can\'t find podcast with such id');
+        } catch (HttpException $e) {
+            return $this->response->error($e->getMessage(), $e->getStatusCode());
         } catch (\Throwable $t) {
             return $this->response->errorInternal('Application was unable to approve this podcast');
         }
