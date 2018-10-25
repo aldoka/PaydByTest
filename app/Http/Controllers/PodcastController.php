@@ -75,7 +75,7 @@ class PodcastController extends BaseController
      * @return \Illuminate\Http\Response
      * @post("/")
      * @Versions({"v1"})
-     * @Request({"name":"foo","description":"bar","feed_url":"http://test.gmail/test"}, headers={"Accept": "application/vnd.paydbytest.v1+json"}))
+     * @Request({"name":"foo","description":"bar","feed_url":"http://test.gmail/test"}, headers={"Accept": "application/vnd.podcast.v1+json"}))
      * @Response(201, body={})
      */
     public function store(StorePodcast $request, Podcast $podcast, Storage $storage)
@@ -113,7 +113,7 @@ class PodcastController extends BaseController
             return $this->response->errorInternal('Application was unable to save this podcast');
         }
 
-        return $this->response->created();
+        return $this->response->created(null, $podcast);
     }
 
 
@@ -135,7 +135,7 @@ class PodcastController extends BaseController
      * @return \Illuminate\Http\Response
      * @get("/{id}")
      * @Versions({"v1"})
-     * @Request({"id":"1"}, headers={"Accept": "application/vnd.paydbytest.v1+json"}))
+     * @Request({"id":"1"}, headers={"Accept": "application/vnd.podcast.v1+json"}))
      * @Response(201, body={})
      */
     public function show(Podcast $podcast, int $id)
@@ -144,7 +144,7 @@ class PodcastController extends BaseController
         try{
             $result = $podcast->findOrFail($id);
         } catch (ModelNotFoundException $e) {
-            throw new \Dingo\Api\Exception\ResourceException('Application can\'t find podcast with such id');
+            return $this->response->errorNotFound('Application can\'t find podcast with such id');
         } catch (\Throwable $t) {
             return $this->response->errorInternal('Application was unable to show this podcast');
         }
@@ -161,7 +161,7 @@ class PodcastController extends BaseController
      * @return \Illuminate\Http\Response
      * @put("/{id}")
      * @Versions({"v1"})
-     * @Request({"id":"1"}, headers={"Accept": "application/vnd.paydbytest.v1+json"}))
+     * @Request({"id":"1"}, headers={"Accept": "application/vnd.podcast.v1+json"}))
      * @Response(204)
      */
     public function update(UpdatePodcast $request, Podcast $podcast, int $id)
@@ -187,7 +187,7 @@ class PodcastController extends BaseController
      * @return \Illuminate\Http\Response
      * @Delete("/{id}")
      * @Versions({"v1"})
-     * @Request({"id":"1"}, headers={"Accept": "application/vnd.paydbytest.v1+json"}))
+     * @Request({"id":"1"}, headers={"Accept": "application/vnd.podcast.v1+json"}))
      * @Response(204)
      */
     public function destroy(Podcast $podcast, int $id)
@@ -213,7 +213,7 @@ class PodcastController extends BaseController
      * @param int $id
      * @get("/approve/{id}")
      * @Versions({"v1"})
-     * @Request({"id":"1"}, headers={"Accept": "application/vnd.paydbytest.v1+json"}))
+     * @Request({"id":"1"}, headers={"Accept": "application/vnd.podcast.v1+json"}))
      * @Response(201, body={})
      */
     public function approve(Podcast $podcast, int $id) {

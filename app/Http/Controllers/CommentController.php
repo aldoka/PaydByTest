@@ -24,7 +24,7 @@ class CommentController extends BaseController
      * @return \Illuminate\Http\Response
      * @post("/{podcastId}")
      * @Versions({"v1"})
-     * @Request({"author_name":"foo","author_email":"bar@foo.gmail","comment":"blablabla"}, headers={"Accept": "application/vnd.paydbytest.v1+json"}))
+     * @Request({"author_name":"foo","author_email":"bar@foo.gmail","comment":"blablabla"}, headers={"Accept": "application/vnd.podcast.v1+json"}))
      * @Response(201, body={})
      */
     public function store(StoreComment $request, Comment $comment, int $podcastId)
@@ -51,7 +51,7 @@ class CommentController extends BaseController
      * @return \Illuminate\Http\Response
      * @Delete("/{id}")
      * @Versions({"v1"})
-     * @Request({"id":"1"}, headers={"Accept": "application/vnd.paydbytest.v1+json"}))
+     * @Request({"id":"1"}, headers={"Accept": "application/vnd.podcast.v1+json"}))
      * @Response(204)
      */
     public function destroy(Comment $comment, int $id)
