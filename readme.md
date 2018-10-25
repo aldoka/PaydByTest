@@ -1,6 +1,6 @@
 FORMAT: 1A
 
-# Sergey Kuzminich. PaydBy Test
+# Sergey Kuzminich. Simple podcasts API example
 
 # Installation
 
@@ -12,18 +12,18 @@ FORMAT: 1A
 
 + create file `.env` in the project root folder with the following content
     ```
-    APP_NAME=PaydByTets
+    APP_NAME=Podcast
     APP_ENV=dev
     APP_KEY=base64:Y+AL96WQFiaDos5tLZC45MwHL9vhKv8BljENBqD8KnM=
     APP_DEBUG=true
-    APP_URL=http://paydby.test !!!!!!!!!!!!!CHANGE IT!!!!!!!!!!!!!!!!!!!
+    APP_URL=http://podcast.test !!!!!!!!!!!!!CHANGE IT!!!!!!!!!!!!!!!!!!!
 
     LOG_CHANNEL=stack
 
     DB_CONNECTION=mysql
     DB_HOST=127.0.0.1
     DB_PORT=3306
-    DB_DATABASE=paydbytest !!!!!!!!!!!!!CHANGE IT!!!!!!!!!!!!!!!!!!!
+    DB_DATABASE=podcast !!!!!!!!!!!!!CHANGE IT!!!!!!!!!!!!!!!!!!!
     DB_USERNAME=root !!!!!!!!!!!!!CHANGE IT!!!!!!!!!!!!!!!!!!!
     DB_PASSWORD=pass !!!!!!!!!!!!!CHANGE IT!!!!!!!!!!!!!!!!!!!
 
@@ -53,10 +53,10 @@ FORMAT: 1A
     MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
 
     API_STANDARDS_TREE=vnd
-    API_SUBTYPE=paydbytest
+    API_SUBTYPE=podcast
     API_PREFIX=api
     API_VERSION=v1
-    API_NAME="Sergey Kuzminich. PaydBy Test"
+    API_NAME="Sergey Kuzminich. Podcast example"
     API_STRICT=true
     API_DEBUG=true
     ```
@@ -78,7 +78,7 @@ Class PodcastController
 + Request (application/json)
     + Headers
 
-            Accept: application/vnd.paydbytest.v1+json
+            Accept: application/vnd.podcast.v1+json
     + Body
 
             {
@@ -98,7 +98,7 @@ Class PodcastController
 + Request (application/json)
     + Headers
 
-            Accept: application/vnd.paydbytest.v1+json
+            Accept: application/vnd.podcast.v1+json
     + Body
 
             {
@@ -116,7 +116,7 @@ Class PodcastController
 + Request (application/json)
     + Headers
 
-            Accept: application/vnd.paydbytest.v1+json
+            Accept: application/vnd.podcast.v1+json
     + Body
 
             {
@@ -131,7 +131,7 @@ Class PodcastController
 + Request (application/json)
     + Headers
 
-            Accept: application/vnd.paydbytest.v1+json
+            Accept: application/vnd.podcast.v1+json
     + Body
 
             {
@@ -146,7 +146,7 @@ Class PodcastController
 + Request (application/json)
     + Headers
 
-            Accept: application/vnd.paydbytest.v1+json
+            Accept: application/vnd.podcast.v1+json
     + Body
 
             {
@@ -167,7 +167,7 @@ Class CommentController
 + Request (application/json)
     + Headers
 
-            Accept: application/vnd.paydbytest.v1+json
+            Accept: application/vnd.podcast.v1+json
     + Body
 
             {
@@ -187,7 +187,7 @@ Class CommentController
 + Request (application/json)
     + Headers
 
-            Accept: application/vnd.paydbytest.v1+json
+            Accept: application/vnd.podcast.v1+json
     + Body
 
             {
